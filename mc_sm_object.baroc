@@ -1,19 +1,9 @@
-#
-# File name: mc_sm_object.baroc
-# Version: 11.3.01
-# Copyright 1998-2018 BMC Software, Inc. All Rights Reserved
-#
-#-----------------------------------------------------------
-# Service Impact Model Atrium core/BMC CDM Component classes
-#-----------------------------------------------------------
-
 MC_PUBLISH_DATA_CLASS : BMC_BaseElement ISA MC_SM_COMPONENT
    DEFINES {
       Category : STRING;
       DatasetId : STRING;
       Department : STRING;
       Description : STRING;
-      Floor : STRING;
       ImpactCostUnit : STRING;
       InstanceId : STRING;
       Item : STRING;
@@ -31,7 +21,6 @@ MC_PUBLISH_DATA_CLASS : BMC_BaseElement ISA MC_SM_COMPONENT
       SiteGroup : STRING;
       TokenId : STRING, default = '0';
       Type : STRING;
-      UsersAffected : INTEGER;
       VersionNumber : STRING;
       WriteSecurity : LIST_OF STRING;
    };
@@ -41,9 +30,9 @@ MC_PUBLISH_DATA_CLASS : BMC_Collection ISA BMC_BaseElement;
 END
 
 MC_PUBLISH_DATA_CLASS : BMC_ConcreteCollection ISA BMC_Collection
- DEFINES {
-CollectionType : STRING;
-};
+   DEFINES {
+      CollectionType : STRING;
+   };
 END
 
 MC_PUBLISH_DATA_CLASS : BMC_ConnectivityCollection ISA BMC_Collection;
@@ -146,15 +135,7 @@ END
 MC_PUBLISH_DATA_CLASS : BMC_ServiceOfferingInstance ISA BMC_LogicalEntity;
 END
 
-ENUMERATION isVirtual
-   0   No
-   1   Yes
-END
-
-MC_PUBLISH_DATA_CLASS : BMC_System ISA BMC_BaseElement
-   DEFINES {
-      isVirtual : isVirtual;
-   };
+MC_PUBLISH_DATA_CLASS : BMC_System ISA BMC_BaseElement;
 END
 
 MC_PUBLISH_DATA_CLASS : BMC_ApplicationSystem ISA BMC_System;
@@ -166,7 +147,7 @@ ENUMERATION ApplicationType
    2   StandardApplication
    3   InfrastructureApplication
    4   ClusteredApplication
-   5   CompositeApplicaiton
+   5   CompositeApplication
 END
 
 MC_PUBLISH_DATA_CLASS : BMC_Application ISA BMC_ApplicationSystem
@@ -276,20 +257,6 @@ MC_PUBLISH_DATA_CLASS : BMC_Cluster ISA BMC_System
    };
 END
 
-ENUMERATION VirtualSystemType
-   0   Other
-   1   Unknown
-   2   LPAR
-   3   'VM/VM Guest'
-   4   VMware
-   20   Xen
-   25   LDOM
-   30   'Solaris Container'
-   35   'HP nPartitions'
-   40   VPar
-   45   'Microsoft Hyper-V'
-END
-
 ENUMERATION SystemType
    0   'X86-based PC'
    1   'MIPS-based PC'
@@ -301,6 +268,7 @@ ENUMERATION SystemType
    7   '64-bit Alpha PC'
    8   Unknown
    9   'X86-Nec98 PC'
+   10   'IA64-Intel PC'
 END
 
 ENUMERATION PrimaryCapability
@@ -359,6 +327,23 @@ ENUMERATION PrimaryCapability
    52   'Layer 3 Proxy Server'
    53   'WAN Accelerator'
    54   'SAN Processor'
+   55   'Access Point'
+   56   'Wireless LAN Controller'
+END
+
+ENUMERATION VirtualSystemType
+   0   Other
+   1   Unknown
+   2   LPAR
+   3   'VM/VM Guest'
+   4   VMware
+   20   Xen
+   25   LDOM
+   30   'Solaris Container'
+   35   'HP nPartitions'
+   40   VPar
+   45   'Microsoft Hyper-V'
+   60   KVM
 END
 
 MC_PUBLISH_DATA_CLASS : BMC_ComputerSystem ISA BMC_System
@@ -375,13 +360,9 @@ END
 MC_PUBLISH_DATA_CLASS : BMC_Mainframe ISA BMC_ComputerSystem;
 END
 
-MC_PUBLISH_DATA_CLASS : BMC_StorageSubsystem ISA BMC_ComputerSystem;
-END
-
 MC_PUBLISH_DATA_CLASS : BMC_SystemComponent ISA BMC_BaseElement
    DEFINES {
       SystemClassId : STRING;
-      SystemName : STRING;
    };
 END
 
@@ -416,47 +397,6 @@ END
 MC_PUBLISH_DATA_CLASS : BMC_UPS ISA BMC_HardwareSystemComponent;
 END
 
-MC_PUBLISH_DATA_CLASS : BMC_HardwarePackage ISA BMC_HardwareSystemComponent;
-END
-
-ENUMERATION RackMountable
-   0   Unknown
-   1   True
-   2   False
-END
-
-ENUMERATION ChassisType
-   0	Other
-   1	Unknown
-   2	Desktop
-   3	'Low-profile desktop'
-   4	'Pizza box'
-   5	'Mini tower'
-   6	Tower
-   7	Portable
-   8	Laptop
-   9	Notebook
-   10	'Hand-held'
-   11	'Docking station'
-   12	'All-in-one'
-   13	Subnotebook
-   14	'Space-saving'
-   15	'Lunch box'
-   16	'Main system chassis'
-   17	'Expansion chassis'
-   18	Subchassis
-   19	'Bus-expansion chassis'
-   20	'Peripheral Chassis'
-END
-
-MC_PUBLISH_DATA_CLASS : BMC_Chassis ISA BMC_HardwarePackage
-DEFINES {
-	NumberOfPowerCords : INTEGER;
-	RackMountable : RackMountable;
-	ChassisType : ChassisType;
-	};
-END
-
 MC_PUBLISH_DATA_CLASS : BMC_LogicalSystemComponent ISA BMC_SystemComponent;
 END
 
@@ -479,26 +419,19 @@ ENUMERATION Primordial
    0   False
    1   True
 END
+
 MC_PUBLISH_DATA_CLASS : BMC_ResourcePool ISA BMC_LogicalSystemComponent
-DEFINES {
-	Type : STRING;
-	SubType : STRING;
-	Primordial : Primordial, default = 'False';
-	};
+   DEFINES {
+      Type : STRING;
+      SubType : STRING;
+      Primordial : Primordial;
+   };
 END
+
 MC_PUBLISH_DATA_CLASS : BMC_Software ISA BMC_LogicalSystemComponent;
 END
 
 MC_PUBLISH_DATA_CLASS : BMC_SystemSoftware ISA BMC_Software;
-END
-
-MC_PUBLISH_DATA_CLASS : BMC_StorageExtent ISA BMC_LogicalSystemComponent;
-END
-
-MC_PUBLISH_DATA_CLASS : BMC_LogicalDisk ISA BMC_StorageExtent;
-END
-
-MC_PUBLISH_DATA_CLASS : BMC_StorageVolume ISA BMC_StorageExtent;
 END
 
 ENUMERATION OSType
@@ -579,6 +512,8 @@ ENUMERATION OSType
    74   'Microsoft Windows Server 2008'
    75   'Microsoft Windows 7'
    76   'VMware ESXi'
+   77   'Windows Server 2012'
+   78   'Windows 10'
 END
 
 MC_PUBLISH_DATA_CLASS : BMC_OperatingSystem ISA BMC_SystemSoftware
@@ -587,40 +522,24 @@ MC_PUBLISH_DATA_CLASS : BMC_OperatingSystem ISA BMC_SystemSoftware
    };
 END
 
-ENUMERATION EnablerType
-   0   Other
-   1   Unknown
-   2   'PR/SM'
-   3   'z/VM'
-   4   'VMware Server'
-   5   'Solaris Resource Manager'
-   6   LPAR
-   7   VPar
-   20   'HP nPartitions'
-   25   'Integrity VM'
-   30   'Microsoft Hyper-V'
-   35   'VMware ESX Server'
-   40   'VMware Workstation'
-   45   'Xen Hypervisor'
-   50   'LDOM Hypervisor'
+MC_PUBLISH_DATA_CLASS : BMC_VirtualSystemEnabler ISA BMC_SystemSoftware;
 END
 
-MC_PUBLISH_DATA_CLASS : BMC_VirtualSystemEnabler ISA BMC_SystemSoftware
-   DEFINES {
-      EnablerType : EnablerType;
-   };
+MC_PUBLISH_DATA_CLASS : BMC_StorageExtent ISA BMC_LogicalSystemComponent;
+END
+
+MC_PUBLISH_DATA_CLASS : BMC_LogicalDisk ISA BMC_StorageExtent;
+END
+
+MC_PUBLISH_DATA_CLASS : BMC_StorageVolume ISA BMC_StorageExtent;
 END
 
 MC_PUBLISH_DATA_CLASS : BMC_SystemResource ISA BMC_LogicalSystemComponent;
 END
 
-MC_PUBLISH_DATA_CLASS : BMC_MFCouplingFacility ISA BMC_SystemResource;
-END
-
 MC_PUBLISH_DATA_CLASS : BMC_SystemService ISA BMC_BaseElement
    DEFINES {
       SystemClassId : STRING;
-      SystemName : STRING;
    };
 END
 
@@ -634,9 +553,3 @@ MC_PUBLISH_DATA_CLASS : BMC_Impact ISA MC_SM_RELATIONSHIP
       WriteSecurity : LIST_OF STRING;
    };
 END
-#-----------------------------------------------------
-# Topology Model Atrium core/BMC CDM Component classes
-#-----------------------------------------------------
-
-# Service Impact Model and Topology Model use the same component instance of the MC_SM_COMPONENT subclasses.
-
